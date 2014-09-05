@@ -17,6 +17,7 @@ CGEventRef catchEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRe
     if (type == kCGEventKeyDown) { /* to listen for key events, run this program as root */
         // Key number logging is dangerous so I commented it out. Use it at your own risk.
         //int key = CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode);
+        //asl_log(asl, NULL, ASL_LEVEL_NOTICE, "kCGEventKey:%d", key);
         asl_log(asl, NULL, ASL_LEVEL_NOTICE, "kCGEventKey");
     }
     LOGEVENT(kCGEventMouseMoved)

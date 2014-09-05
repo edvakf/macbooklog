@@ -126,3 +126,55 @@ Then restart td-agent.
 sudo launchctl stop td-agent
 sudo launchctl start td-agent
 ```
+
+### DANGEROUS: if you enable key code logging
+
+BEWARE THAT ANYONE WHO HAS ACCESS TO YOUR COMPUTER CAN SEE YOUR PASSWORD.
+
+You need fluent-plugin-sampling-filter as well.
+
+ * `sudo /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-sampling-filter`
+
+```
+<source>
+  type tail
+  path /var/log/macbooklog.log
+  pos_file /tmp/macbooklog.pos
+  tag macbooklog
+  format syslog
+</source>
+
+<match macbooklog>
+  type rewrite_tag_filter
+  rewriterule1 message ^kCGEventKey             raw.macbooklog.key
+  rewriterule2 message ^kCGEventScrollWheel$    raw_macbooklog.mouse.scroll
+  rewriterule3 message ^kCGEventMouseMoved$     raw_macbooklog.mouse.move
+  rewriterule4 message ^kCGEventLeftMouseDown$  macbooklog.mouse.click
+  rewriterule5 message ^kCGEventRightMouseDown$ macbooklog.mouse.click
+</match>
+
+<match raw_macbooklog.key>
+  type parser
+  remove_prefix raw_macbooklog
+  add_prefix macbooklog
+  format /^(?<message>kCGEventKey):(?<keycode>\\d+)$/
+  key_name message
+</match>
+
+<match raw_macbooklog.mouse.*>
+  type sampling_filter
+  interval 10
+  remove_prefix raw_macbooklog
+  add_prefix macbooklog
+</match>
+
+<match macbooklog.**>
+  type elasticsearch
+  host localhost
+  port 9200
+  logstash_format true
+  logstash_prefix macbooklog
+  include_tag_key true
+  tag_key event
+</match>
+```
