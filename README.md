@@ -20,19 +20,6 @@ $ make
 $ sudo make install
 ```
 
-You need to do this for the first time you use this.
-
-```
-$ sudo launchctl load /Library/LaunchDaemons/macbooklog.plist
-```
-
-Next time you `make install` you need to do:
-
-```
-$ sudo launchctl stop macbooklog
-$ sudo launchctl start macbooklog # somehow, doing `stop` does the `start` too, so this may not be needed
-```
-
 To make sure it's working
 
 ```
@@ -42,37 +29,12 @@ $ sudo tail -f /var/log/macbooklog.log
 ### Uninstall
 
 ```
-$ sudo launchctl unload /Library/LaunchDaemons/macbooklog.plist
-$ rm /Library/LaunchDaemons/macbooklog.plist
-$ rm /usr/sbin/macbooklog
+$ sudo make uninstall
 ```
 
 ## Monitor logs on Kibana
 
 Below settings are not needed to use this to just run the code.
-
-### /etc/asl.conf
-
-By default, identical syslog lines within 20 seconds or so are coalesced like
-
-```
---- last message repeated 17 times ---
-```
-
-so write macbooklog's log to another file and set coalesce to false.
-
-Add this line to the bottom.
-
-```
-? [= Facility macbooklog] file macbooklog.log file_max=1M all_max=5M coalesce=false
-```
-
-Then restart syslogd.
-
-```
-$ sudo launchctl stop com.apple.syslogd
-$ sudo launchctl start com.apple.syslogd
-```
 
 ### /etc/td-agent/td-agent.conf
 
