@@ -108,7 +108,7 @@ You need fluent-plugin-sampling-filter as well.
 
 <match macbooklog>
   type rewrite_tag_filter
-  rewriterule1 message ^kCGEventKey             raw.macbooklog.key
+  rewriterule1 message ^kCGEventKey             raw_macbooklog.key
   rewriterule2 message ^kCGEventScrollWheel$    raw_macbooklog.mouse.scroll
   rewriterule3 message ^kCGEventMouseMoved$     raw_macbooklog.mouse.move
   rewriterule4 message ^kCGEventLeftMouseDown$  macbooklog.mouse.click
